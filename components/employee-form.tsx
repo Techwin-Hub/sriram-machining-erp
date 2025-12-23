@@ -5,6 +5,7 @@ import type React from "react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
+import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -58,7 +59,7 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
     } = await supabase.auth.getUser()
 
     if (!user) {
-      alert("You must be logged in")
+      toast.error("You must be logged in to save employee data.")
       return
     }
 
@@ -94,9 +95,10 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
     }
 
     if (error) {
-      alert("Error saving employee: " + error.message)
+      toast.error("Error saving employee: " + error.message)
       setIsLoading(false)
     } else {
+      toast.success(`Employee ${employee ? "updated" : "created"} successfully!`)
       router.push("/dashboard/employees")
       router.refresh()
     }
@@ -194,7 +196,18 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
               <Label htmlFor="salary_type">Salary Type</Label>
               <Select
                 value={formData.salary_type}
-                onValueChange={(value) => setFormData({ ...formData, salary_type: value as "daily" | "monthly" })}
+                onValueChange={(value) => {
+                  const newFormData = {
+                    ...formData,
+                    salary_type: value as "daily" | "monthly",
+                  }
+                  if (value === "daily") {
+                    newFormData.salary_per_month = ""
+                  } else {
+                    newFormData.salary_per_day = ""
+                  }
+                  setFormData(newFormData)
+                }}
               >
                 <SelectTrigger>
                   <SelectValue />

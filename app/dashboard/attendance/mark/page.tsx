@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import { DashboardHeader } from "@/components/dashboard-header"
-import { AttendanceMarkForm } from "@/components/attendance-mark-form"
+import { DailyAttendanceSheet } from "@/components/daily-attendance-sheet"
 
 export default async function MarkAttendancePage() {
   const supabase = await createClient()
@@ -24,7 +24,7 @@ export default async function MarkAttendancePage() {
     <div>
       <DashboardHeader title="Mark Attendance" description="Record employee attendance for today" />
       <div className="p-6">
-        <AttendanceMarkForm employees={employees || []} />
+        <DailyAttendanceSheet employees={employees || []} />
       </div>
     </div>
   )
