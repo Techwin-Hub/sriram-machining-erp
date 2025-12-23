@@ -3,7 +3,7 @@ import { redirect } from "next/navigation"
 import { DashboardHeader } from "@/components/dashboard-header"
 import { DailyAttendanceSheet } from "@/components/daily-attendance-sheet"
 import { DateSelector } from "@/components/date-selector"
-import { format } from "date-fns"
+import { format, isValid, parseISO } from "date-fns"
 
 interface HistoryPageProps {
   searchParams: {
@@ -21,7 +21,9 @@ export default async function AttendanceHistoryPage({ searchParams }: HistoryPag
     redirect("/auth/login")
   }
 
-  const selectedDate = searchParams.date || format(new Date(), "yyyy-MM-dd")
+  const dateString = searchParams.date
+  const parsedDate = dateString ? parseISO(dateString) : new Date()
+  const selectedDate = isValid(parsedDate) ? format(parsedDate, "yyyy-MM-dd") : format(new Date(), "yyyy-MM-dd")
 
   const { data: employees } = await supabase
     .from("employees")

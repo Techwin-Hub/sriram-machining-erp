@@ -73,6 +73,7 @@ export function DailyAttendanceSheet({
 
     const submissionDate = initialDate || format(new Date(), "yyyy-MM-dd")
 
+    const validStatusCodes = Object.keys(attendanceStatusCodes)
     const attendanceData = Object.entries(attendance)
       .map(([employee_id, att]) => ({
         employee_id,
@@ -81,7 +82,13 @@ export function DailyAttendanceSheet({
         ot_hours: Number(att.ot_hours || 0),
         user_id: user.id,
       }))
-      .filter((att) => att.status_code) // Ensure we only save records with a status
+      .filter((att) => validStatusCodes.includes(att.status_code))
+
+    if (attendanceData.length === 0) {
+      toast.info("No valid attendance records to save.")
+      setIsLoading(false)
+      return
+    }
 
     const { error } = await supabase.from("attendance").upsert(attendanceData, { onConflict: "employee_id,date" })
 
