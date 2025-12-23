@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## 2024-07-29 (Fix)
+
+-   **Attendance Form Bug**
+    -   Fixed a critical bug where the attendance form was submitting the full status description (e.g., "S - Shift Worked") instead of the status code (e.g., "S"), causing a database check constraint violation.
+-   **Files Affected**
+    -   `components/attendance-mark-form.tsx`
+-   **SQL Required:** No
+
 ## 2024-07-29
 
 -   **Attendance Module OT Rules**

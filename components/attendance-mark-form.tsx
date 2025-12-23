@@ -62,7 +62,7 @@ export function AttendanceMarkForm({ employees }: AttendanceMarkFormProps) {
       check_in: formData.check_in || null,
       check_out: formData.check_out || null,
       status_code: formData.status_code,
-      ot_hours: Number.parseFloat(formData.ot_hours),
+      ot_hours: Number.parseFloat(formData.ot_hours || "0"),
       notes: formData.notes,
       user_id: user.id,
     }
@@ -154,7 +154,15 @@ export function AttendanceMarkForm({ employees }: AttendanceMarkFormProps) {
                 }}
               >
                 <SelectTrigger>
-                  <SelectValue />
+                  <SelectValue placeholder="Select status">
+                    {formData.status_code
+                      ? `${formData.status_code} - ${
+                          attendanceStatusCodes[
+                            formData.status_code as keyof typeof attendanceStatusCodes
+                          ]
+                        }`
+                      : "Select status"}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   {Object.entries(attendanceStatusCodes).map(([code, description]) => (
