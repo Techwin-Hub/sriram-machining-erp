@@ -5,13 +5,14 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Edit, Clock } from "lucide-react"
 import Link from "next/link"
+import { attendanceStatusCodes } from "@/lib/constants"
 
 interface AttendanceRecord {
   id: string
   date: string
   check_in: string | null
   check_out: string | null
-  status: string
+  status_code: string
   ot_hours: number
   notes: string | null
   employees: {
@@ -25,17 +26,21 @@ interface AttendanceRecord {
 export function AttendanceTable({ attendance }: { attendance: AttendanceRecord[] }) {
   const getStatusVariant = (status: string) => {
     switch (status) {
-      case "present":
+      case "S":
         return "default"
-      case "absent":
+      case "X":
         return "destructive"
-      case "half_day":
+      case "SL":
+      case "L":
+      case "PC":
         return "secondary"
-      case "leave":
-        return "outline"
       default:
-        return "default"
+        return "outline"
     }
+  }
+
+  const getStatusDescription = (code: string) => {
+    return attendanceStatusCodes[code as keyof typeof attendanceStatusCodes] || "Unknown"
   }
 
   return (
@@ -78,7 +83,9 @@ export function AttendanceTable({ attendance }: { attendance: AttendanceRecord[]
                   </div>
                 </TableCell>
                 <TableCell>
-                  <Badge variant={getStatusVariant(record.status)}>{record.status.replace("_", " ")}</Badge>
+                  <Badge variant={getStatusVariant(record.status_code)}>
+                    {record.status_code} - {getStatusDescription(record.status_code)}
+                  </Badge>
                 </TableCell>
                 <TableCell className="max-w-xs truncate">{record.notes || "-"}</TableCell>
                 <TableCell className="text-right">

@@ -6,7 +6,7 @@ This document tracks the status of the ERP stabilization project. The goal is to
 
 ## Current State
 
-The initial project audit, authentication simplification, and SQL schema audit are complete. The system is now locked down to a single-user model, and the core SQL scripts have been updated to remove all role-based logic.
+The initial project audit, authentication simplification, and SQL schema audit are complete. The system is now locked down to a single-user model. The employee management and attendance modules have been refactored to match business requirements.
 
 ## What is fixed
 
@@ -18,18 +18,26 @@ The initial project audit, authentication simplification, and SQL schema audit a
     -   The `role` column has been removed from the `public.profiles` table.
     -   The `handle_new_user` trigger has been updated to remove role assignment.
     -   The seed data script has been updated to remove its dependency on `auth.uid()` and now uses a placeholder variable.
+-   **Employee Management:**
+    -   The `employees` table now supports both daily and monthly salary structures.
+    -   Added `salary_type`, `salary_per_month`, and `ot_rate_per_hour` columns to the `employees` table.
+    -   The employee form has been updated to conditionally handle daily vs. monthly salary inputs.
+    -   The employee table now displays the correct salary information based on the employee's salary type.
+-   **Attendance Module:**
+    -   Replaced the generic `present`/`absent` status with business-specific codes: `S` (Shift Worked), `X` (Absent), `SL` (Sick Leave), `L` (Leave), and `PC` (Paid Casual Leave).
+    -   The `status` column in the `attendance` table has been renamed to `status_code` and a check constraint has been added to enforce the new codes.
+    -   The attendance marking form and the attendance table have been updated to use the new status codes.
+    -   Dashboard statistics now correctly calculate "present" and "absent" counts based on the 'S' and 'X' codes.
 
 ## What is pending
 
 ### Immediate Priorities
-1.  **Project Audit:** Continue the full codebase review to identify other misaligned or overbuilt features.
+1.  **Payroll Module:** Implement the two required salary models (CNC and Plating), building upon the new employee and attendance structure.
 
 ### Subsequent Steps
-2.  **Attendance Module:** Rework the attendance logic to match the Excel-based system.
-3.  **Payroll Module:** Implement the two required salary models (CNC and Plating).
-4.  **Production & Plating:** Simplify the plating module to its core functionality.
-5.  **Delivery Challan:** Ensure the DC module is compliant with job-work regulations.
-6.  **Final Consistency Check:** A full review to ensure the frontend, backend, and database are all in sync.
+2.  **Production & Plating:** Simplify the plating module to its core functionality.
+3.  **Delivery Challan:** Ensure the DC module is compliant with job-work regulations.
+4.  **Final Consistency Check:** A full review to ensure the frontend, backend, and database are all in sync.
 
 ## What is intentionally deferred
 - Multi-user support

@@ -41,8 +41,8 @@ export default async function AttendancePage() {
   const { data: employees } = await supabase.from("employees").select("*").eq("status", "active")
 
   const totalEmployees = employees?.length || 0
-  const presentCount = attendance?.filter((a) => a.status === "present").length || 0
-  const absentCount = attendance?.filter((a) => a.status === "absent").length || 0
+  const presentCount = attendance?.filter((a) => a.status_code === "S").length || 0
+  const absentCount = attendance?.filter((a) => a.status_code === "X").length || 0
   const notMarkedCount = totalEmployees - (attendance?.length || 0)
 
   return (

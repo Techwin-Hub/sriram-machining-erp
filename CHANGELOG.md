@@ -4,6 +4,46 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## 2024-07-28 (Fix)
+
+-   **Code Review Fixes**
+    -   **Database Migration Fix:** Corrected a failing SQL migration (`20240728120000_add_salary_details_to_employees.sql`) by ensuring the `UPDATE` statement sets `salary_per_day` to `NULL` for employees converted to a 'monthly' salary type. This prevents the subsequent `ADD CONSTRAINT` command from failing.
+    -   **Refactoring:** Extracted the duplicated `attendanceStatusCodes` object into a single, shared constant in `lib/constants.ts` to improve maintainability and consistency. The `attendance-mark-form.tsx` and `attendance-table.tsx` components now import this constant.
+-   **Files Affected**
+    -   `supabase/migrations/20240728120000_add_salary_details_to_employees.sql`
+    -   `SUPABASE_CHANGES.md`
+    -   `lib/constants.ts` (new)
+    -   `components/attendance-mark-form.tsx`
+    -   `components/attendance-table.tsx`
+-   **SQL Required:** Yes
+    -   **Instructions:** The user must manually apply the corrected SQL from the migration file.
+
+## 2024-07-28
+
+-   **Employee & Attendance Module Refactor**
+    -   **Employee Management:**
+        -   Enhanced the `employees` table to support both "daily" and "monthly" salary types.
+        -   Added `salary_type`, `salary_per_month`, and `ot_rate_per_hour` columns to the `employees` table.
+        -   Updated the employee form to conditionally show salary inputs based on `salary_type`.
+        -   Modified the employees table to correctly display salary information.
+    -   **Attendance System:**
+        -   Replaced generic attendance statuses with business-specific codes (`S`, `X`, `SL`, `L`, `PC`).
+        -   Renamed the `status` column to `status_code` in the `attendance` table and added a check constraint.
+        -   Updated the attendance marking form and display table to use the new status codes.
+        -   Corrected the dashboard attendance statistics to align with the new codes.
+-   **Files Affected**
+    -   `components/employee-form.tsx`
+    -   `components/employees-table.tsx`
+    -   `components/attendance-mark-form.tsx`
+    -   `components/attendance-table.tsx`
+    -   `app/dashboard/attendance/page.tsx`
+    -   `supabase/migrations/20240728120000_add_salary_details_to_employees.sql` (new)
+    -   `supabase/migrations/20240728120001_refactor_attendance_status.sql` (new)
+    -   `SUPABASE_CHANGES.md` (new)
+-   **SQL Required:** Yes
+    -   **Instructions:**
+        1.  The user must manually apply the SQL from the two new migration files located in `supabase/migrations/` to their Supabase Cloud database. The full scripts are also documented in `SUPABASE_CHANGES.md`.
+
 ## 2024-07-24
 
 -   **SQL Schema Audit and Fixes**

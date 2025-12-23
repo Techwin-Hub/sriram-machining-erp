@@ -22,7 +22,9 @@ interface EmployeeFormProps {
     date_of_joining: string
     phone: string | null
     address: string | null
+    salary_type: "daily" | "monthly" | null
     salary_per_day: number | null
+    salary_per_month: number | null
     ot_rate_per_hour: number | null
     status: string
   }
@@ -39,7 +41,9 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
     date_of_joining: employee?.date_of_joining || "",
     phone: employee?.phone || "",
     address: employee?.address || "",
+    salary_type: employee?.salary_type || "daily",
     salary_per_day: employee?.salary_per_day?.toString() || "",
+    salary_per_month: employee?.salary_per_month?.toString() || "",
     ot_rate_per_hour: employee?.ot_rate_per_hour?.toString() || "",
     status: employee?.status || "active",
   })
@@ -59,9 +63,24 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
     }
 
     const data = {
-      ...formData,
       user_id: user.id,
-      salary_per_day: formData.salary_per_day ? Number.parseFloat(formData.salary_per_day) : null,
+      employee_code: formData.employee_code,
+      name: formData.name,
+      designation: formData.designation,
+      department: formData.department,
+      date_of_joining: formData.date_of_joining,
+      phone: formData.phone,
+      address: formData.address,
+      status: formData.status,
+      salary_type: formData.salary_type,
+      salary_per_day:
+        formData.salary_type === "daily" && formData.salary_per_day
+          ? Number.parseFloat(formData.salary_per_day)
+          : null,
+      salary_per_month:
+        formData.salary_type === "monthly" && formData.salary_per_month
+          ? Number.parseFloat(formData.salary_per_month)
+          : null,
       ot_rate_per_hour: formData.ot_rate_per_hour ? Number.parseFloat(formData.ot_rate_per_hour) : null,
     }
 
@@ -172,27 +191,58 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="salary_per_day">Salary Per Day (₹)</Label>
-              <Input
-                id="salary_per_day"
-                type="number"
-                step="0.01"
-                value={formData.salary_per_day}
-                onChange={(e) => setFormData({ ...formData, salary_per_day: e.target.value })}
-                placeholder="500.00"
-              />
+              <Label htmlFor="salary_type">Salary Type</Label>
+              <Select
+                value={formData.salary_type}
+                onValueChange={(value) => setFormData({ ...formData, salary_type: value as "daily" | "monthly" })}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="daily">Daily</SelectItem>
+                  <SelectItem value="monthly">Monthly</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="ot_rate_per_hour">OT Rate Per Hour (₹)</Label>
-              <Input
-                id="ot_rate_per_hour"
-                type="number"
-                step="0.01"
-                value={formData.ot_rate_per_hour}
-                onChange={(e) => setFormData({ ...formData, ot_rate_per_hour: e.target.value })}
-                placeholder="75.00"
-              />
-            </div>
+
+            {formData.salary_type === "daily" ? (
+              <div className="space-y-2">
+                <Label htmlFor="salary_per_day">Salary Per Day (₹)</Label>
+                <Input
+                  id="salary_per_day"
+                  type="number"
+                  step="0.01"
+                  value={formData.salary_per_day}
+                  onChange={(e) => setFormData({ ...formData, salary_per_day: e.target.value })}
+                  placeholder="500.00"
+                />
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <Label htmlFor="salary_per_month">Salary Per Month (₹)</Label>
+                <Input
+                  id="salary_per_month"
+                  type="number"
+                  step="0.01"
+                  value={formData.salary_per_month}
+                  onChange={(e) => setFormData({ ...formData, salary_per_month: e.target.value })}
+                  placeholder="15000.00"
+                />
+              </div>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="ot_rate_per_hour">OT Rate Per Hour (₹)</Label>
+            <Input
+              id="ot_rate_per_hour"
+              type="number"
+              step="0.01"
+              value={formData.ot_rate_per_hour}
+              onChange={(e) => setFormData({ ...formData, ot_rate_per_hour: e.target.value })}
+              placeholder="75.00"
+            />
           </div>
 
           <div className="space-y-2">

@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
+import { attendanceStatusCodes } from "@/lib/constants"
 
 interface Employee {
   id: string
@@ -33,7 +34,7 @@ export function AttendanceMarkForm({ employees }: AttendanceMarkFormProps) {
     date: today,
     check_in: "",
     check_out: "",
-    status: "present",
+    status_code: "S",
     ot_hours: "0",
     notes: "",
   })
@@ -49,13 +50,19 @@ export function AttendanceMarkForm({ employees }: AttendanceMarkFormProps) {
 
     if (!user) {
       alert("You must be logged in")
+      setIsLoading(false)
       return
     }
 
     const data = {
-      ...formData,
-      user_id: user.id,
+      employee_id: formData.employee_id,
+      date: formData.date,
+      check_in: formData.check_in || null,
+      check_out: formData.check_out || null,
+      status_code: formData.status_code,
       ot_hours: Number.parseFloat(formData.ot_hours),
+      notes: formData.notes,
+      user_id: user.id,
     }
 
     const { error } = await supabase.from("attendance").insert([data])
@@ -130,16 +137,20 @@ export function AttendanceMarkForm({ employees }: AttendanceMarkFormProps) {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="status">Status *</Label>
-              <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value })}>
+              <Label htmlFor="status_code">Status *</Label>
+              <Select
+                value={formData.status_code}
+                onValueChange={(value) => setFormData({ ...formData, status_code: value })}
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="present">Present</SelectItem>
-                  <SelectItem value="absent">Absent</SelectItem>
-                  <SelectItem value="half_day">Half Day</SelectItem>
-                  <SelectItem value="leave">Leave</SelectItem>
+                  {Object.entries(attendanceStatusCodes).map(([code, description]) => (
+                    <SelectItem key={code} value={code}>
+                      {code} - {description}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>

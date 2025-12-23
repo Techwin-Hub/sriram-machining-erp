@@ -16,7 +16,9 @@ interface Employee {
   department: string
   date_of_joining: string
   phone: string | null
+  salary_type: "daily" | "monthly" | null
   salary_per_day: number | null
+  salary_per_month: number | null
   status: string
 }
 
@@ -36,6 +38,16 @@ export function EmployeesTable({ employees }: { employees: Employee[] }) {
     }
   }
 
+  const formatSalary = (employee: Employee) => {
+    if (employee.salary_type === "daily" && employee.salary_per_day) {
+      return `₹${employee.salary_per_day.toLocaleString()}/day`
+    }
+    if (employee.salary_type === "monthly" && employee.salary_per_month) {
+      return `₹${employee.salary_per_month.toLocaleString()}/month`
+    }
+    return "-"
+  }
+
   return (
     <div className="rounded-md border border-border">
       <Table>
@@ -47,7 +59,7 @@ export function EmployeesTable({ employees }: { employees: Employee[] }) {
             <TableHead>Department</TableHead>
             <TableHead>Joining Date</TableHead>
             <TableHead>Phone</TableHead>
-            <TableHead>Daily Rate</TableHead>
+            <TableHead>Salary</TableHead>
             <TableHead>Status</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
@@ -68,7 +80,7 @@ export function EmployeesTable({ employees }: { employees: Employee[] }) {
                 <TableCell>{employee.department}</TableCell>
                 <TableCell>{new Date(employee.date_of_joining).toLocaleDateString()}</TableCell>
                 <TableCell>{employee.phone || "-"}</TableCell>
-                <TableCell>{employee.salary_per_day ? `₹${employee.salary_per_day}` : "-"}</TableCell>
+                <TableCell>{formatSalary(employee)}</TableCell>
                 <TableCell>
                   <Badge variant={employee.status === "active" ? "default" : "secondary"}>{employee.status}</Badge>
                 </TableCell>
