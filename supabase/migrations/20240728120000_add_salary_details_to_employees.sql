@@ -1,13 +1,19 @@
--- Create a new type for salary_type enum
-CREATE TYPE salary_type_enum AS ENUM ('daily', 'monthly');
+-- Create enum only if it does not already exist
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_type WHERE typname = 'salary_type_enum'
+  ) THEN
+    CREATE TYPE salary_type_enum AS ENUM ('daily', 'monthly');
+  END IF;
+END$$;
 
--- Add the new columns to the employees table
+-- Add only missing columns
 ALTER TABLE employees
-ADD COLUMN salary_type salary_type_enum,
-ADD COLUMN salary_per_month NUMERIC(10, 2),
-ADD COLUMN ot_rate_per_hour NUMERIC(10, 2);
+ADD COLUMN IF NOT EXISTS salary_type salary_type_enum,
+ADD COLUMN IF NOT EXISTS salary_per_month NUMERIC(10, 2);
 
--- Update existing employees based on their department
+-- Update existing employees
 UPDATE employees
 SET
   salary_type = CASE
@@ -15,7 +21,7 @@ SET
     ELSE 'daily'::salary_type_enum
   END,
   salary_per_month = CASE
-    WHEN department = 'Plating' THEN 20000.00 -- Default value for existing plating workers
+    WHEN department = 'Plating' THEN 20000.00
     ELSE NULL
   END,
   salary_per_day = CASE
@@ -23,13 +29,27 @@ SET
     ELSE salary_per_day
   END,
   ot_rate_per_hour = CASE
-    WHEN department = 'Plating' THEN 100.00 -- Default value for existing plating workers
-    ELSE 75.00 -- Default value for other workers
+    WHEN department = 'Plating' THEN 100.00
+    ELSE 75.00
   END;
 
--- Add a check constraint to ensure data integrity
-ALTER TABLE employees
-ADD CONSTRAINT salary_consistency_check CHECK (
-  (salary_type = 'daily' AND salary_per_day IS NOT NULL AND salary_per_month IS NULL) OR
-  (salary_type = 'monthly' AND salary_per_month IS NOT NULL AND salary_per_day IS NULL)
-);
+-- Add constraint only if it does not exist
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_constraint
+    WHERE conname = 'salary_consistency_check'
+  ) THEN
+    ALTER TABLE employees
+    ADD CONSTRAINT salary_consistency_check CHECK (
+      (salary_type = 'daily'
+        AND salary_per_day IS NOT NULL
+        AND salary_per_month IS NULL)
+      OR
+      (salary_type = 'monthly'
+        AND salary_per_month IS NOT NULL
+        AND salary_per_day IS NULL)
+    );
+  END IF;
+END$$;
