@@ -33,32 +33,30 @@ export function DailyAttendanceSheet({
 }: DailyAttendanceSheetProps) {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
-  const [attendance, setAttendance] = useState<Record<string, Partial<Attendance>>>({})
-
-  useEffect(() => {
-    const newAttendance: Record<string, Partial<Attendance>> = {}
+  const [attendance, setAttendance] = useState<Record<string, Partial<Attendance>>>(() => {
+    const initialState: Record<string, Partial<Attendance>> = {}
     employees.forEach((employee) => {
       const existingRecord = initialAttendance.find((att) => att.employee_id === employee.id)
-      newAttendance[employee.id] = {
+      initialState[employee.id] = {
         status_code: existingRecord?.status_code || "S",
         ot_hours: existingRecord?.ot_hours || 0,
       }
     })
-    setAttendance(newAttendance)
-  }, [employees, initialAttendance])
+    return initialState
+  })
 
   const handleAttendanceChange = (employeeId: string, field: keyof Attendance, value: any) => {
-    const newAttendance = {
-      ...attendance,
-      [employeeId]: {
-        ...attendance[employeeId],
+    setAttendance((prev) => {
+      const newAttendance = { ...prev }
+      newAttendance[employeeId] = {
+        ...newAttendance[employeeId],
         [field]: value,
-      },
-    }
-    if (field === "status_code" && value !== "S") {
-      newAttendance[employeeId].ot_hours = 0
-    }
-    setAttendance(newAttendance)
+      }
+      if (field === "status_code" && value !== "S") {
+        newAttendance[employeeId].ot_hours = 0
+      }
+      return newAttendance
+    })
   }
 
   const handleSubmit = async () => {
