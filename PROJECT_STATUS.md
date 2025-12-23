@@ -6,7 +6,7 @@ This document tracks the status of the ERP stabilization project. The goal is to
 
 ## Current State
 
-The initial project audit and the first phase of authentication simplification are complete. The system is now locked down to a single-user model, with the admin user created via a manual SQL script.
+The initial project audit, authentication simplification, and SQL schema audit are complete. The system is now locked down to a single-user model, and the core SQL scripts have been updated to remove all role-based logic.
 
 ## What is fixed
 
@@ -14,6 +14,10 @@ The initial project audit and the first phase of authentication simplification a
     -   The public signup functionality has been completely removed.
     -   All role-based logic has been stripped from the database type definitions, enforcing a single-permission level.
     -   A secure SQL script is now provided to seed the single admin user, preventing credential exposure.
+-   **SQL Schema:**
+    -   The `role` column has been removed from the `public.profiles` table.
+    -   The `handle_new_user` trigger has been updated to remove role assignment.
+    -   The seed data script has been updated to remove its dependency on `auth.uid()` and now uses a placeholder variable.
 
 ## What is pending
 

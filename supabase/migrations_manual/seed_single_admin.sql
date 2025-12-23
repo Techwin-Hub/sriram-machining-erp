@@ -5,13 +5,18 @@
 -- Email: sethuramanvr046@gmail.com
 -- Password: Spirulina12*#
 --
+-- This script will insert a new user into the `auth.users` table.
+-- The `handle_new_user` trigger will then automatically create a corresponding
+-- profile in the `public.profiles` table.
+
 -- Before running, ensure the pgcrypto extension is enabled.
 -- You can do this by running: CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 -- Use a transaction to ensure both inserts succeed or fail together
 BEGIN;
 
--- Insert the new user into auth.users and capture the new user's ID
+-- Insert the new user into auth.users
+-- The `handle_new_user` trigger will automatically create the profile.
 WITH new_user AS (
   INSERT INTO auth.users (
     instance_id,
