@@ -16,7 +16,7 @@ export default async function MarkAttendancePage() {
   // Fetch all active employees
   const { data: employees } = await supabase
     .from("employees")
-    .select("*")
+    .select("id, employee_code, name, designation, department, ot_rate_per_hour")
     .eq("status", "active")
     .order("name", { ascending: true })
 

@@ -28,6 +28,9 @@ The initial project audit, authentication simplification, and SQL schema audit a
     -   The `status` column in the `attendance` table has been renamed to `status_code` and a check constraint has been added to enforce the new codes.
     -   The attendance marking form and the attendance table have been updated to use the new status codes.
     -   Dashboard statistics now correctly calculate "present" and "absent" counts based on the 'S' and 'X' codes.
+    -   Overtime (OT) rules are now enforced in the UI. OT is only allowed for status 'S'.
+    -   The attendance marking form now displays the employee's OT rate and the calculated OT amount.
+    -   The attendance table now displays the calculated OT amount.
 
 ## What is pending
 

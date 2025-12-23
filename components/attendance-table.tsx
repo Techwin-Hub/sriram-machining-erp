@@ -20,6 +20,7 @@ interface AttendanceRecord {
     name: string
     designation: string
     department: string
+    ot_rate_per_hour: number | null
   }
 }
 
@@ -55,6 +56,7 @@ export function AttendanceTable({ attendance }: { attendance: AttendanceRecord[]
             <TableHead>Check In</TableHead>
             <TableHead>Check Out</TableHead>
             <TableHead>OT Hours</TableHead>
+            <TableHead>OT Amount</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Notes</TableHead>
             <TableHead className="text-right">Actions</TableHead>
@@ -63,7 +65,7 @@ export function AttendanceTable({ attendance }: { attendance: AttendanceRecord[]
         <TableBody>
           {attendance.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={10} className="text-center text-muted-foreground">
+              <TableCell colSpan={11} className="text-center text-muted-foreground">
                 No attendance records for today. Start marking attendance.
               </TableCell>
             </TableRow>
@@ -81,6 +83,11 @@ export function AttendanceTable({ attendance }: { attendance: AttendanceRecord[]
                     {record.ot_hours > 0 && <Clock className="h-3 w-3 text-accent" />}
                     <span>{record.ot_hours}</span>
                   </div>
+                </TableCell>
+                <TableCell>
+                  {(
+                    record.ot_hours * (record.employees.ot_rate_per_hour || 0)
+                  ).toFixed(2)}
                 </TableCell>
                 <TableCell>
                   <Badge variant={getStatusVariant(record.status_code)}>

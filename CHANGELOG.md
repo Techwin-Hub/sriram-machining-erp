@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## 2024-07-29
+
+-   **Attendance Module OT Rules**
+    -   Implemented UI logic to enforce overtime (OT) rules.
+    -   The "OT Hours" input is now disabled unless the attendance status is 'S' (Shift Worked).
+    -   The attendance marking form now displays the selected employee's OT rate.
+    -   A read-only field now shows the calculated OT amount in real-time on the attendance form.
+    -   Added an "OT Amount" column to the main attendance table to show the calculated overtime pay for each entry.
+-   **Files Affected**
+    -   `components/attendance-mark-form.tsx`
+    -   `components/attendance-table.tsx`
+    -   `app/dashboard/attendance/page.tsx`
+    -   `PROJECT_STATUS.md`
+-   **SQL Required:** No
+
 ## 2024-07-28 (Fix)
 
 -   **Code Review Fixes**

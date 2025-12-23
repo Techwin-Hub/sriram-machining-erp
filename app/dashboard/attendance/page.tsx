@@ -30,7 +30,8 @@ export default async function AttendancePage() {
         employee_code,
         name,
         designation,
-        department
+        department,
+        ot_rate_per_hour
       )
     `,
     )

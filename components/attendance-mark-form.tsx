@@ -19,6 +19,7 @@ interface Employee {
   name: string
   designation: string
   department: string
+  ot_rate_per_hour: number | null
 }
 
 interface AttendanceMarkFormProps {
@@ -28,6 +29,7 @@ interface AttendanceMarkFormProps {
 export function AttendanceMarkForm({ employees }: AttendanceMarkFormProps) {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null)
   const today = new Date().toISOString().split("T")[0]
   const [formData, setFormData] = useState({
     employee_id: "",
@@ -88,7 +90,10 @@ export function AttendanceMarkForm({ employees }: AttendanceMarkFormProps) {
               <Label htmlFor="employee_id">Employee *</Label>
               <Select
                 value={formData.employee_id}
-                onValueChange={(value) => setFormData({ ...formData, employee_id: value })}
+                onValueChange={(value) => {
+                  setFormData({ ...formData, employee_id: value })
+                  setSelectedEmployee(employees.find((emp) => emp.id === value) || null)
+                }}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select employee" />
@@ -140,7 +145,13 @@ export function AttendanceMarkForm({ employees }: AttendanceMarkFormProps) {
               <Label htmlFor="status_code">Status *</Label>
               <Select
                 value={formData.status_code}
-                onValueChange={(value) => setFormData({ ...formData, status_code: value })}
+                onValueChange={(value) => {
+                  const newFormData = { ...formData, status_code: value }
+                  if (value !== "S") {
+                    newFormData.ot_hours = "0"
+                  }
+                  setFormData(newFormData)
+                }}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -163,9 +174,43 @@ export function AttendanceMarkForm({ employees }: AttendanceMarkFormProps) {
                 value={formData.ot_hours}
                 onChange={(e) => setFormData({ ...formData, ot_hours: e.target.value })}
                 placeholder="0.0"
+                disabled={formData.status_code !== "S"}
               />
+              {formData.status_code !== "S" && (
+                <p className="text-xs text-muted-foreground">OT is only applicable for 'S' status.</p>
+              )}
             </div>
           </div>
+
+          {selectedEmployee && (
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>OT Rate per Hour</Label>
+                <Input
+                  type="text"
+                  value={selectedEmployee.ot_rate_per_hour?.toFixed(2) || "N/A"}
+                  readOnly
+                  className="bg-muted"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Calculated OT Amount</Label>
+                <Input
+                  type="text"
+                  value={
+                    formData.status_code === "S" && selectedEmployee.ot_rate_per_hour
+                      ? (
+                          Number.parseFloat(formData.ot_hours || "0") *
+                          selectedEmployee.ot_rate_per_hour
+                        ).toFixed(2)
+                      : "0.00"
+                  }
+                  readOnly
+                  className="bg-muted"
+                />
+              </div>
+            </div>
+          )}
 
           <div className="space-y-2">
             <Label htmlFor="notes">Notes</Label>
