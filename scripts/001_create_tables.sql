@@ -128,7 +128,7 @@ CREATE TABLE IF NOT EXISTS public.attendance (
   date DATE NOT NULL,
   check_in TIME,
   check_out TIME,
-  status TEXT NOT NULL CHECK (status IN ('present', 'absent', 'half_day', 'leave')),
+  status_code TEXT NOT NULL CHECK (status_code IN ('S', 'absent', 'half_day', 'leave')),
   ot_hours DECIMAL(5, 2) DEFAULT 0,
   notes TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
