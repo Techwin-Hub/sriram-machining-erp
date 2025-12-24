@@ -9,6 +9,7 @@ import Link from "next/link"
 interface AttendanceRecord {
   id: string
   date: string
+  employee_id: string
   check_in: string | null
   check_out: string | null
   status_code: string
@@ -95,7 +96,7 @@ export function AttendanceHistory({ attendance }: { attendance: AttendanceRecord
                         </TableCell>
                         <TableCell className="text-right">
                           <Button variant="ghost" size="icon" asChild>
-                            <Link href={`/dashboard/attendance/edit/${record.id}`}>
+                            <Link href={`/dashboard/attendance/edit/${record.date}/${record.employee_id}`}>
                               <Edit className="h-4 w-4" />
                             </Link>
                           </Button>

@@ -24,7 +24,8 @@ import { revalidatePath } from "next/cache"
 
 interface EditAttendancePageProps {
   params: {
-    id: string
+    date: string
+    employeeId: string
   }
 }
 
@@ -48,7 +49,8 @@ export default async function EditAttendancePage({ params }: EditAttendancePageP
       )
     `,
     )
-    .eq("id", params.id)
+    .eq("date", params.date)
+    .eq("employee_id", params.employeeId)
     .single()
 
   if (!attendanceRecord) {
@@ -67,11 +69,10 @@ export default async function EditAttendancePage({ params }: EditAttendancePageP
         ot_hours: Number(formData.get("ot_hours")),
         notes: formData.get("notes") as string,
       })
-      .eq("id", params.id)
+      .eq("id", attendanceRecord.id)
 
     if (error) {
       console.error("Error updating attendance:", error)
-      // Optionally, redirect to an error page or show a message
     } else {
       revalidatePath("/dashboard/attendance/history")
       redirect("/dashboard/attendance/history")

@@ -34,7 +34,7 @@ The initial project audit, authentication simplification, and SQL schema audit a
 -   **Attendance UI Flow:**
     -   The attendance module now has three distinct pages: "Mark Attendance", "Attendance History", and "Edit Attendance".
     -   The "Attendance History" page now correctly groups records by date and provides a clear overview of past attendance.
-    -   The "Edit Attendance" page is now fully functional, accessible from the history page, and allows for the modification of individual attendance records.
+    -   The "Edit Attendance" page is now fully functional, accessible from the history page via a deterministic `/dashboard/attendance/edit/[date]/[employeeId]` route, and allows for the modification of individual attendance records.
     -   All routing issues have been resolved, and there are no more 404 errors in the attendance module.
 
 ## What is pending
