@@ -31,6 +31,11 @@ The initial project audit, authentication simplification, and SQL schema audit a
     -   Overtime (OT) rules are now enforced in the UI. OT is only allowed for status 'S'.
     -   The attendance marking form now displays the employee's OT rate and the calculated OT amount.
     -   The attendance table now displays the calculated OT amount.
+-   **Attendance UI Flow:**
+    -   The attendance module now has three distinct pages: "Mark Attendance", "Attendance History", and "Edit Attendance".
+    -   The "Attendance History" page now correctly groups records by date and provides a clear overview of past attendance.
+    -   The "Edit Attendance" page is now fully functional, accessible from the history page, and allows for the modification of individual attendance records.
+    -   All routing issues have been resolved, and there are no more 404 errors in the attendance module.
 
 ## What is pending
 

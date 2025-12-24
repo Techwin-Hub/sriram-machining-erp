@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## 2024-07-29 (Fix) - Attendance UI Flow
+
+-   **UI Flow Overhaul**
+    -   Resolved a critical UI flow issue where "View History" and "Mark Attendance" led to the same page.
+    -   The attendance module is now split into three distinct, functional pages:
+        1.  **Mark Attendance (`/dashboard/attendance/mark`)**: The existing page for marking daily attendance.
+        2.  **Attendance History (`/dashboard/attendance/history`)**: A new, dedicated page that displays a complete history of attendance records, grouped by date for clarity.
+        3.  **Edit Attendance (`/dashboard/attendance/edit/[id]`)**: A new page that allows for the editing of individual attendance records, correcting a 404 error.
+-   **Files Affected**
+    -   `components/attendance-history.tsx` (new)
+    -   `app/dashboard/attendance/history/page.tsx` (updated)
+    -   `app/dashboard/attendance/edit/[id]/page.tsx` (new)
+-   **SQL Required:** No
+
 ## 2024-07-29 (Fix)
 
 -   **Attendance Form Bug**

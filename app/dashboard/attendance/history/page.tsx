@@ -1,17 +1,9 @@
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import { DashboardHeader } from "@/components/dashboard-header"
-import { DailyAttendanceSheet } from "@/components/daily-attendance-sheet"
-import { DateSelector } from "@/components/date-selector"
-import { format, isValid, parseISO } from "date-fns"
+import { AttendanceHistory } from "@/components/attendance-history"
 
-interface HistoryPageProps {
-  searchParams: {
-    date?: string
-  }
-}
-
-export default async function AttendanceHistoryPage({ searchParams }: HistoryPageProps) {
+export default async function AttendanceHistoryPage() {
   const supabase = await createClient()
 
   const {
@@ -21,31 +13,26 @@ export default async function AttendanceHistoryPage({ searchParams }: HistoryPag
     redirect("/auth/login")
   }
 
-  const dateString = searchParams.date
-  const parsedDate = dateString ? parseISO(dateString) : new Date()
-  const selectedDate = isValid(parsedDate) ? format(parsedDate, "yyyy-MM-dd") : format(new Date(), "yyyy-MM-dd")
-
-  const { data: employees } = await supabase
-    .from("employees")
-    .select("id, employee_code, name, designation, department, ot_rate_per_hour")
-    .eq("status", "active")
-    .order("name", { ascending: true })
-
   const { data: attendance } = await supabase
     .from("attendance")
-    .select("*")
-    .eq("date", selectedDate)
+    .select(
+      `
+      *,
+      employees:employee_id (
+        employee_code,
+        name,
+        designation,
+        department
+      )
+    `,
+    )
+    .order("date", { ascending: false })
 
   return (
     <div>
       <DashboardHeader title="Attendance History" description="View and edit past attendance records" />
-      <div className="p-6 space-y-4">
-        <DateSelector initialDate={selectedDate} />
-        <DailyAttendanceSheet
-          employees={employees || []}
-          initialDate={selectedDate}
-          initialAttendance={attendance || []}
-        />
+      <div className="p-6">
+        <AttendanceHistory attendance={attendance || []} />
       </div>
     </div>
   )
